@@ -1,0 +1,10 @@
+# Product Lists Configuration
+# Just add your JSON file paths - everything else is auto-detected!
+
+C:\Users\nmssk401\Downloads\styles\10045_401097928176
+C:\Users\nmssk401\Downloads\styles\10081_401000237107
+C:\Users\nmssk401\Downloads\styles\10830_401000217729
+C:\Users\nmssk401\Downloads\styles\110951_401101697845
+C:\Users\nmssk401\Downloads\styles\110951_401107375389
+C:\Users\nmssk401\Downloads\styles\110951_401117834746
+C:\Users\nmssk401\Downloads\styles\110951_401121866528

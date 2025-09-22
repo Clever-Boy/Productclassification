@@ -1,0 +1,13 @@
+# Example Product Lists Configuration
+# Add your JSON file paths here, one per line
+
+# Example paths (replace with your actual file paths):
+# C:\Users\YourName\Downloads\styles\product1.json
+# C:\Users\YourName\Downloads\styles\product2.json
+# /path/to/your/products.json
+
+# The system will automatically:
+# - Generate list names from filenames
+# - Detect categories from the data
+# - Create output files based on list names
+# - Set default minimum products to 1

@@ -1,90 +1,270 @@
-# Product Classifier 
+# Product Classification System
 
-This repo explores simple methods for classifying content (products) using both image and text features.
+A comprehensive product analysis and recommendation system that works with JSON data files.
 
-The dataset used for classification is pulled from the www.shopstyle.com public API.  The relevant portions of the product definition pulled from the shopstyle api are product name, description, image, and correct category.  The goal is to use some or all of the name/description/image data to correctly predict the category.  An example datum is below:
+## 🚀 Quick Start
 
-<img src="https://img.shopstyle-cdn.com/sim/4f/41/4f41ca111ba265702f1d416ea79aebd2_medium/kut-from-the-kloth-womens-natalie-stretch-curvy-bootcut-jeans.jpg"/>
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-**Name**: Women's Kut From The Kloth 'Natalie' Stretch Curvy Bootcut Jeans
+### 2. Configure Your Product Lists
+Edit `examples/product_lists.txt` to add your JSON file paths:
+```
+# Product Lists Configuration
+# Just add your JSON file paths - everything else is auto-detected!
 
-**Description**: Fading and whiskering add well-worn appeal to the dark-blue wash of curve-flattering bootcut jeans, while plain back pockets make for a sleek rear view. Color(s): lift/ dark stone. Brand: KUT FROM THE KLOTH. Style Name:Kut From The Kloth 'Natalie' Stretch Curvy Bootcut Jeans (Lift/dark Stone). Style Number: 5209389. Available in stores.
+C:\Users\YourName\Downloads\styles\product1.json
+C:\Users\YourName\Downloads\styles\product2.json
+```
 
-**Category**: bootcut-jeans
+### 3. Run Analysis
+```bash
+# Analyze all products
+python src/multi_product_analyzer.py --product-lists-config examples/product_lists.txt
 
-Some challenges with classifying this content comes from the fact that the leafs categories are often ambiguous.  Bootcut vs flare jeans is not always clear.  And what about a pair of bootcut jeans that are also distressed (another subcategory under jeans).  Another class of problems comes from the fact that there are subcategories for "athletic", "maternity", "plus size" and "petites", each of which has a "tops" subcategory.  So a polo could be either a "womens-tops/polo-tops", an "athletic/ahtletic-tops", a "maternity/top", a "plus-sizes/plus-size-tops", or a "petites/petite-tops".
+# Create tabular charts with Python visualizations
+python src/tabular_product_analyzer.py --product-lists-config examples/product_lists.txt
 
-The sample dataset I worked with consisted of all leaf categories under the "women" category, which includes clothing, handbags, shoes, jewelry, and beauty products.  Men's, kids & baby, and living categories were ignored.  Only leaf categories that had 1000 or more products were considered.  These restrictions left 156 leaf categories and just over 146k products (yes there should be 156*1000 products, some bug during the crawl presumably).  The categories covered are listed in `results/categories.txt`.
+# Get product recommendations with visual display
+python src/product_recommender_json.py --config-file examples/product_lists.txt --analyze
+python src/product_recommender_json.py --config-file examples/product_lists.txt --recommend "PRODUCT_ID_HERE"
+```
 
-Experiments were run on an 80%/10%/10% train/validation/test split where total accuracy was measured.  If machine predicted categories were used in a real product UI you would want to be especially sensitive to false positives (you really don't want a bra showing up in the jeans section), so in addition to total accuracy, coverage @ 95%/98% accuracy is measured.  Total accuracy of 85% over the total corpus is not as interesting as knowing that 70% of the corpus can be covered with a threshold that has been shown to have a very very low error rate (98% implies 1 in 50 mistakes)
+## 📁 Project Structure
 
-### Image classification
+```
+ProductClassification/
+├── src/                          # Main source code
+│   ├── json_data_loader.py       # JSON data loading utility
+│   ├── multi_product_analyzer.py # Multi-file product analyzer
+│   ├── product_analyzer_from_file.py # Single file product analyzer
+│   ├── product_analyzer_json.py  # JSON-based product analyzer
+│   ├── tabular_product_analyzer.py # Tabular chart generator
+│   ├── product_recommender_json.py # Visual product recommendation system
+│   ├── image_classifier_json.py  # Image classification
+│   ├── combined_classifier_json.py # Combined text + image classifier
+│   ├── simple_text_classifier.py # Text classification
+│   ├── basic_text_analyzer.py    # Basic text analysis
+│   ├── categorize_words_json.py  # Word categorization
+│   ├── images/                   # Cached product images (7 files)
+│   ├── 10045_401097928176_analysis.txt # Generated analysis report
+│   └── product_analysis_charts.xlsx # Generated Excel charts
+├── examples/                     # Example files and configurations
+│   ├── product_lists.txt        # Your product lists configuration
+│   ├── example_product_lists.txt # Example configuration template
+│   ├── run_analysis.py          # Example analysis script
+│   ├── run_examples.bat         # Windows batch file for examples
+│   ├── analysis_results.txt     # Example analysis output
+│   ├── comprehensive_analysis.xlsx # Example Excel output
+│   ├── comprehensive_analysis_updated.xlsx # Updated example
+│   └── comprehensive_analysis_with_python_charts.xlsx # Python charts example
+├── results/                      # Legacy analysis results
+│   ├── categories.txt           # Category data
+│   ├── image-classification-top500-errors.html # Image classification errors
+│   └── text-classification-top500-errors.html # Text classification errors
+├── architecture/                 # System architecture documentation
+│   ├── system_architecture.md   # Main architecture overview
+│   ├── component_diagram.md     # Component interactions
+│   └── data_flow.md            # Data flow documentation
+├── requirements.txt             # Python dependencies
+├── config.env.example          # Environment configuration template
+└── README.md                   # This documentation file
+```
 
-The first approach was to classify entirely based on the image content.  The approach used [retrain.py](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/image_retraining) which repurposes a pre-trained Inception CNN to classify a new image corpus.  This is an example of "transfer learning", which is based on the assumption that the generally trained Inception network will recognize useful features of any image that then can be leveraged for domain specific classification.  The second to last layer outputs for each image are taken essentially as an embedding of the image into a 2048 dimensional space (2048 is the size of the second to last layer).  So with each image represented as a 2048 dimension vector, you can perform simple logistic regression to train a classifier.
+## 🎯 Main Features
 
-Initial results looked promising for simple cases.  For example classifying "clutches" (a kind of handbag) vs "bootcut-jeans" was done with 100% accuracy, which is to be expected givne they are so visuall distinct.  A more complex case of "skinny-jeans" vs "bootcut-jeans" was also promising with 89% accuracy and 73% coverage @95% accuracy.  However when covering the entire corpus of 146k products the overall accuracy dropped to 56%, and coverage @95% was only 12% of the corpus.  Examples of the top 500 (meaning the incorrect categories that the network had the highest confidence in) can be seen in `results/image-classification-top500-errors.html`.  Note the first 20 or so look to be legitimate errors on the part of the dataset (meaning the classifier got it right).
+### 📊 **Product Analysis**
+- **Multi-file Analysis**: Analyze multiple JSON files simultaneously
+- **Comprehensive Metrics**: Extract 15+ product attributes including sustainability, materials, style, pricing, brand analysis, dimensions, care instructions, target market, seasonal trends, quality assessment, and usage recommendations
+- **Inventory Analysis**: Track SKU numbers, stock status, quantities, and locations
 
-### Text classification
+### 📈 **Visualization & Reporting**
+- **Tabular Charts**: Generate comprehensive Excel reports with multiple sheets
+- **Python Charts**: Interactive matplotlib visualizations including:
+  - Stock Status Distribution
+  - Price Range Analysis
+  - Brand Tier Distribution
+  - Sustainability Analysis (Yes/No counts)
+  - Inventory Categories
+  - Market Segment Analysis
+- **Excel Export**: Professional Excel files with formatted data
 
-The second approach used the product name and description of the product to classify it.  A simple 3 layer network was used.  The input was a 20k sparse vector representing a bag-of-words representation of the name/description for the product for the top 20k terms found in the corpus.  The hidden layer is 100 ReLus, and the final softmax layer performs classification.  The results on the entire 146k corpus was an overall accuracy of 89% and coverage @95% of 82%.  Top errors can be seen in `results/text-classification-top500-errors.html`.
+### 🎨 **Product Recommendations**
+- **Visual Display**: Show target product and 5 recommendations with images
+- **Multiple Similarity Types**: Text-only, image-only, or combined similarity
+- **Detailed Explanations**: Explain why products are similar
+- **Image Processing**: Download and analyze product images automatically
 
-This bag of words classifier is very naive.  TBD try a word2vec style embedding (or perhaps [Swivel](https://github.com/tensorflow/models/tree/master/swivel)) to see if it improves.
+### 🤖 **Classification Systems**
+- **Text Classification**: Analyze product descriptions and names
+- **Image Classification**: Extract visual features from product images
+- **Combined Analysis**: Merge text and image features for comprehensive analysis
+- **No TensorFlow Required**: Lightweight alternatives using scikit-learn and PIL
 
-### Combined Image+Text classification
+## 🔧 Configuration
 
-I tried combining the two by constructing a network that essentially concatenated the 100 hidden layer text classifier values with the 2048 image embedding from retrain.py and used a softmax layer over all 2148 inputs for classification.  Results were essentially the same as the text classifier.  Essentially the image classifier seems to add no value which is unsurprising given the text classifier is so far superior to the image classifier.
+### Environment Variables
+Copy `config.env.example` to `config.env` and configure:
+```
+SHOPSTYLE_API_KEY=your_api_key_here
+DATABASE_URL=sqlite:///crawl.db
+```
 
-### How-To
+### Product Lists Configuration
+The `examples/product_lists.txt` file supports:
+- Simple file path listing
+- Automatic list name generation
+- Auto-detection of categories and output files
+- Comment support with `#`
 
-To approximate the results discussed above, first you need a dataset.  Go to http://www.shopstylecollective.com and create an account, and in the account profile section, note your API key and make it available in the environment.
+## 📋 Usage Examples
 
-    $ export SHOPSTYLE_API_KEY=uid#####-###########-###
+### Analyze All Products
+```bash
+python src/multi_product_analyzer.py --product-lists-config examples/product_lists.txt
+```
 
-Perform the crawl.  This will take up to a day or so and can be restarted.
+### Generate Comprehensive Charts
+```bash
+python src/tabular_product_analyzer.py --product-lists-config examples/product_lists.txt --output-file my_analysis.xlsx
+```
 
-    $ python crawl.py
+### Get Product Recommendations
+```bash
+# First, analyze to see available products
+python src/product_recommender_json.py --config-file examples/product_lists.txt --analyze
 
-The crawl stores product information in a local sqlite database called `crawl.db`.  You can explore the database using the `sqlite3` command line tool executing queries like `.schema category`, `.schema product`, `select * from category;` and `select * from product limit 20;`.
+# Then get recommendations for a specific product
+python src/product_recommender_json.py --config-file examples/product_lists.txt --recommend "prod261180192" --top-k 5
+```
 
-Now you can attempt to classify using images (drop the `--categories` argument if you want to do the full dataset).  Note it will take awhile the first time because it has to compute the embedding for each image (referred to in the output and the retrain.p code as the `bottleneck`).
+### Text Classification
+```bash
+python src/simple_text_classifier.py --json-file path/to/your/products.json
+```
 
-    $ python categorize_images.py --categories bootcut-jeans,skinny-jeans
+### Image Classification
+```bash
+python src/image_classifier_json.py --json-file path/to/your/products.json
+```
 
-To run the text classifier:
+## 🎨 Visual Features
 
-    $ python categorize_words.py --categories bootcut-jeans,skinny-jeans
+The recommendation system displays:
+- **Target Product**: Large, centered display with image and description
+- **5 Recommendations**: Side-by-side layout with similarity scores
+- **Image Support**: Automatic image downloading and display
+- **Fallback Handling**: Placeholder images for missing or broken images
+- **Professional Layout**: Clean, organized visual presentation
 
-To run the combined classifier:
+## 📊 Output Examples
 
-    $ python categorize_both.py --categories bootcut-jeans,skinny-jeans
+### Analysis Results
+- **Excel Reports**: Multi-sheet workbooks with comprehensive data (`src/product_analysis_charts.xlsx`)
+- **Python Charts**: Interactive visualizations displayed in separate windows
+- **Text Reports**: Detailed analysis summaries (`src/{list_name}_analysis.txt`)
+- **Image Cache**: Automatically cached product images (`src/images/`)
 
-Each of the above classification runs will leave results data in the sqlite database.  This can be interrogated directly with `sqlite3` with queries like `select * from experiment` and `select * from predicted_category pc where pc.experiment_id=1`.  More conveniently you can generate a report of all experiments in the db by running:
+### Recommendation Output
+- **Visual Display**: Matplotlib-based product comparison
+- **Similarity Scores**: Numerical similarity ratings
+- **Explanations**: Detailed reasoning for recommendations
+- **Product Details**: Names, descriptions, categories, and images
 
-    $ python analyze.py
-	#1: Image classification of: 
-	  Accuracy: 56.19% (N=14867)
-	  95% Accuracy Coverage: 12%
-	  98% Accuracy Coverage: 4%
-	  Parent Accuracy: 70.05%
-	  Parent 95% Accuracy Coverage: 19%
-	  Parent 98% Accuracy Coverage: 5%
-	#2: Text classification of: 
-	  Accuracy: 89.06% (N=14638)
-	  95% Accuracy Coverage: 83%
-	  98% Accuracy Coverage: 54%
-	  Parent Accuracy: 94.58%
-	  Parent 95% Accuracy Coverage: 98%
-	  Parent 98% Accuracy Coverage: 78%
-	...
+## 🎯 Real Analysis Example
 
-You can use `analyze.py` to generate an html report of the top errors (the ones that were wrong that the classifier was most certain of):
+Here's an actual analysis output from the system analyzing 6 products:
 
-    $ python analyze.py --dump-errors-for-experiment 2 >> errors.html
+### 📋 **Sample Product Analysis:**
 
-### Resources
+**🎯 PRODUCT: DRESSING FLORAL ITALIAN BRIEF**
+- **ID**: prod285360089
+- **Category**: Women
+- **Materials**: cotton, polyester, nylon
+- **Style**: floral design
+- **Price**: mid-range ($120)
+- **Brand**: Lise Charmel
+- **Sustainability**: ❌ No (Score: 1/10)
+- **Market**: mass market, budget conscious
+- **Quality**: standard craftsmanship
 
-[TensorFlow for Poets Codelab](https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/#0) - Shows how to leverage a pre-trained Inception CNN to classify your own image corpus.  It is a hands on tutorial for [retrain.py](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/image_retraining)
+**🎯 PRODUCT: SK 3/4S BTNK LNG**
+- **ID**: prod205250129
+- **Category**: Women
+- **Materials**: silk
+- **Style**: Daytime occasions
+- **Price**: luxury ($1038)
+- **Brand**: Eskandar
+- **Sustainability**: ✅ Yes (Score: 3/10, sustainable materials: silk)
+- **Market**: premium market
+- **Quality**: high craftsmanship
 
-[Course Videos for CS231n: Convolutional Neural Networks for Visual Recognition](https://www.youtube.com/playlist?list=PLLvH2FwAQhnpj1WEB-jHmPuUeQ8mX-XXG) - An overview of neural networks for image recognition and an excellent discussion of convolutional neural netowkrs in lecture 7.
+### 📊 **Summary Statistics:**
+- **Total Products**: 6
+- **Sustainable Products**: 1/6 (16.7%)
+- **Average Sustainability Score**: 2.0/10
+- **Price Distribution**: 4 premium, 1 mid-range, 1 luxury
+- **Quality Distribution**: 4 high quality, 2 unknown
+- **Market Distribution**: 4 premium market, 1 mass market, 1 luxury market
+- **Care Requirements**: 4 high maintenance, 2 unknown
 
-[Course Videos for CS224D: Deep Learning for Natural Language Processing](https://www.youtube.com/playlist?list=PLlJy-eBtNFt4CSVWYqscHDdP58M3zFHIG) - Richard Socher's lecture videos cover how to use neural networks in NLP tasks.  Word embeddings are covered as well as some nitty gritty backprop derivations.
+### 🎨 **Analysis Features Demonstrated:**
+✅ **Sustainability Analysis**: Identifies eco-friendly materials and practices
+✅ **Material Extraction**: Detects primary materials (cotton, silk, polyester, nylon)
+✅ **Price Analysis**: Categorizes products by price range and luxury level
+✅ **Brand Analysis**: Identifies brand names and reputation scores
+✅ **Market Segmentation**: Determines target demographics and market positioning
+✅ **Quality Assessment**: Evaluates craftsmanship and construction quality
+✅ **Care Instructions**: Provides maintenance recommendations
+✅ **Style Analysis**: Identifies design elements and occasions
+✅ **Dimensional Analysis**: Extracts size and weight information
+
+## 🛠️ Dependencies
+
+- **Core**: `numpy`, `pandas`, `matplotlib`, `seaborn`
+- **Image Processing**: `Pillow`
+- **Excel Export**: `openpyxl`
+- **HTTP Requests**: `requests`
+- **Database**: `sqlalchemy`
+- **Machine Learning**: `scikit-learn` (optional)
+
+## 📝 Notes
+
+- **No TensorFlow Required**: System uses lightweight alternatives
+- **JSON-Based**: Works directly with JSON product data files
+- **Cross-Platform**: Works on Windows, macOS, and Linux
+- **Extensible**: Easy to add new analysis features
+- **Professional**: Clean, organized codebase with proper documentation
+
+## 🚀 Getting Started
+
+1. **Clone/Download** this repository
+2. **Install dependencies**: `pip install -r requirements.txt`
+3. **Configure product lists**: Edit `examples/product_lists.txt` with your JSON file paths
+4. **Run analysis**: `python src/multi_product_analyzer.py --product-lists-config examples/product_lists.txt`
+5. **View results**: 
+   - Check `src/{list_name}_analysis.txt` for detailed text reports
+   - Check `src/product_analysis_charts.xlsx` for comprehensive Excel data
+   - View Python charts displayed in separate windows
+   - Browse `src/images/` for cached product images
+
+### 🎯 **Quick Test**
+Run the example script: `python examples/run_analysis.py` or double-click `examples/run_examples.bat`
+
+## 🏗️ Architecture Documentation
+
+For detailed understanding of the system architecture:
+
+- **[System Architecture](architecture/system_architecture.md)**: Complete system overview with component diagrams
+- **[Component Interactions](architecture/component_diagram.md)**: Detailed component relationships and data flow
+- **[Data Flow](architecture/data_flow.md)**: How data moves through the system from input to output
+
+The architecture documentation includes:
+- **Component Diagrams**: Visual representation of all system components
+- **Data Flow Charts**: How data flows through the processing pipeline
+- **Sequence Diagrams**: Step-by-step interaction flows
+- **Technical Details**: Design patterns, scalability, and performance considerations
+
+Enjoy analyzing your products! 🎉

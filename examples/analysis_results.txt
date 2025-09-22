@@ -1,0 +1,77 @@
+
+=== Analysis Results ===
+
+🎯 Product: HEART PILLBOXES
+   Category: Women
+   ID: prod261180192
+
+📝 Generated Description:
+   This HEART PILLBOXES is a Women product. crafted from crystal, Crystal, brass. in a luxury style. featuring red colors. This product is environmentally sustainable.
+
+🌱 Sustainability Analysis:
+   Sustainable: ✅ Yes
+   Score: 5/10
+   Eco-friendly Features: couture, made in italy, european
+
+🏗️  Materials & Construction:
+   Primary Materials: crystal, Crystal, brass
+
+🎨 Style & Design:
+   Style Era: luxury
+   Colors: red
+
+💰 Price & Value Analysis:
+   Price Range: premium ($408)
+   Luxury Level: high-end
+   Value Assessment: good
+
+🏷️  Brand Analysis:
+   Brand: Judith Leiber Couture
+   Brand Tier: luxury
+   Reputation Score: 11/10
+   Heritage: luxury heritage, couture, since
+
+📏 Dimensions & Size:
+   Size Category: mini
+   Portability: very portable
+   Dimensions: length: 2.125", width: 1.8", height: 1.0"
+   Weight: 0.5 lbs
+
+🧽 Care & Maintenance:
+   Care Level: unknown
+   Durability: medium
+
+🎯 Target Market:
+   Target Age: adult women
+   Target Income: middle class
+   Market Segment: mid-market
+
+📅 Seasonal & Trends:
+   Season: fall
+   Trend Level: neutral
+   Timeless Factor: medium
+
+⭐ Quality Assessment:
+   Overall Quality: high
+   Craftsmanship: artisan
+   Quality Indicators: premium materials, premium
+
+💡 Recommendations:
+   Styling Tips: Pair with elegant, sophisticated pieces, Perfect for formal occasions and special events
+   Care Tips: Easy to maintain with regular care
+
+📊 Summary:
+   Sustainable: Yes
+   Key Materials: crystal, Crystal, brass
+   Style: luxury
+   Price Range: premium
+   Brand Tier: luxury
+   Quality Level: high
+   Best For: Various
+
+=== Overall Statistics ===
+Total Products Analyzed: 1
+Sustainable Products: 1/1 (100.0%)
+Average Sustainability Score: 5.0/10
+Most Common Materials: {'crystal': 1, 'Crystal': 1, 'brass': 1}
+Most Common Styles: {'luxury': 1}
