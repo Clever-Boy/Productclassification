@@ -432,7 +432,7 @@ class ProductRecommender:
             self._display_text_recommendations(similar_products, target_product)
     
     def _display_visual_recommendations(self, target_product: Dict[str, Any], similar_products: List[Tuple[str, float]]) -> None:
-        """Display visual recommendations with images."""
+        """Display visual recommendations with images and save to file."""
         print(f"\n🖼️ Visual Recommendations:")
         
         # Create figure with subplots
@@ -462,6 +462,19 @@ class ProductRecommender:
         
         # Adjust layout manually instead of using tight_layout
         plt.subplots_adjust(left=0.05, right=0.95, top=0.85, bottom=0.15, hspace=0.4, wspace=0.3)
+        
+        # Save the visualization to src/images
+        output_filename = f"recommendations_{target_product['id']}.png"
+        output_path = self.cache_dir / output_filename
+        
+        # Ensure the directory exists
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save the figure
+        plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+        print(f"📁 Visual recommendations saved to: {output_path}")
+        
+        # Also display the figure
         plt.show()
         
         # Also show text explanations

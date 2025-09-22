@@ -48,7 +48,9 @@ ProductClassification/
 │   ├── simple_text_classifier.py # Text classification
 │   ├── basic_text_analyzer.py    # Basic text analysis
 │   ├── categorize_words_json.py  # Word categorization
-│   ├── images/                   # Cached product images (7 files)
+│   ├── images/                   # Cached product images and recommendation visualizations
+│   │   ├── product images (7 files) # Downloaded product images
+│   │   └── recommendations_*.png # Visual recommendation charts
 │   ├── 10045_401097928176_analysis.txt # Generated analysis report
 │   └── product_analysis_charts.xlsx # Generated Excel charts
 ├── examples/                     # Example files and configurations
@@ -172,10 +174,34 @@ The recommendation system displays:
 - **Similarity Scores**: Numerical similarity ratings
 - **Explanations**: Detailed reasoning for recommendations
 - **Product Details**: Names, descriptions, categories, and images
+- **Saved Visualizations**: PNG files automatically saved to `src/images/` (e.g., `recommendations_prod261180192.png`)
 
 ## 🎯 Real Analysis Example
 
 Here's an actual analysis output from the system analyzing 6 products:
+
+## 🖼️ Visual Recommendation Examples
+
+The product recommendation system generates visual comparisons and saves them as high-quality PNG files:
+
+### **Example Recommendation Output**
+When you run the recommendation system, it creates visualizations like:
+
+```
+📁 Visual recommendations saved to: src/images/recommendations_prod250457851.png
+```
+
+### **Visual Layout**
+- **Top Row**: Target product (large, centered display)
+- **Bottom Row**: 5 recommended products with similarity scores
+- **High Resolution**: 300 DPI PNG files for crisp display
+- **Professional Layout**: Clean, organized presentation with product details
+
+### **File Naming Convention**
+- Format: `recommendations_{PRODUCT_ID}.png`
+- Example: `recommendations_prod261180192.png`
+- Location: `src/images/` directory
+- Automatic: Generated every time you run recommendations
 
 ### 📋 **Sample Product Analysis:**
 
@@ -249,6 +275,7 @@ Here's an actual analysis output from the system analyzing 6 products:
    - Check `src/product_analysis_charts.xlsx` for comprehensive Excel data
    - View Python charts displayed in separate windows
    - Browse `src/images/` for cached product images
+   - Check `src/images/recommendations_*.png` for visual recommendation charts
 
 ### 🎯 **Quick Test**
 Run the example script: `python examples/run_analysis.py` or double-click `examples/run_examples.bat`
