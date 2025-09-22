@@ -139,7 +139,7 @@ python src/tabular_product_analyzer.py --product-lists-config examples/product_l
 python src/product_recommender_json.py --config-file examples/product_lists.txt --analyze
 
 # Then get recommendations for a specific product
-python src/product_recommender_json.py --config-file examples/product_lists.txt --recommend "prod261180192" --top-k 5
+python src/product_recommender_json.py --config-file examples/product_lists.txt --recommend "productID" --top-k 5
 ```
 
 ### Text Classification
@@ -186,10 +186,6 @@ The product recommendation system generates visual comparisons and saves them as
 
 ### **Example Recommendation Output**
 When you run the recommendation system, it creates visualizations like:
-
-```
-📁 Visual recommendations saved to: src/images/recommendations_prod250457851.png
-```
 
 ![Product Recommendations Example](src/images/recommendations_prod250457851.png)
 
