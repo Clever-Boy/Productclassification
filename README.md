@@ -191,6 +191,8 @@ When you run the recommendation system, it creates visualizations like:
 📁 Visual recommendations saved to: src/images/recommendations_prod250457851.png
 ```
 
+![Product Recommendations Example](src/images/recommendations_prod250457851.png)
+
 ### **Visual Layout**
 - **Top Row**: Target product (large, centered display)
 - **Bottom Row**: 5 recommended products with similarity scores
