@@ -1,3 +1,9 @@
 *.pyc
-images
+# Ignore cached product images but allow recommendation visualizations
+src/images/*.jpg
+src/images/*.jpeg
+src/images/*.gif
+src/images/*.webp
+# Allow recommendation PNG files
+!src/images/recommendations_*.png
 *.db
